@@ -14,7 +14,8 @@ import (
 const (
 	queryInsertUser = "INSERT INTO users(first_name, last_name, email, date_created) VALUES(?, ?, ?, ?)"
 	queryReadUser   = "SELECT id, first_name, last_name, email, date_created FROM users WHERE id = ?;"
-	queryUpdateUser = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?;"
+	queryUpdateUser = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id = ?;"
+	queryDeleteUser = "DELETE FROM users WHERE id = ?;"
 )
 
 var (
@@ -114,5 +115,33 @@ func (user *User) Update() *errors.RestErr {
 	if err != nil {
 		return errors.NewInternalServerError("Cannot update!")
 	}
+	return nil
+}
+
+// Delete func
+func (user *User) Delete() *errors.RestErr {
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", mysqlUsername, mysqlPassword, mysqlHost, mysqlPort, mysqlSchema)
+	UsersDB, err := sql.Open("mysql", connectionString)
+	if err != nil {
+		panic(err.Error())
+	}
+	err = UsersDB.Ping()
+	if err != nil {
+		log.Panic(err.Error())
+	} else {
+		fmt.Println("Connected to DB!")
+	}
+	defer UsersDB.Close() // It is very important actually!!!!!!
+	stmt, err := UsersDB.Prepare(queryDeleteUser)
+	if err != nil {
+		return errors.NewInternalServerError(err.Error())
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(user.ID)
+	if err != nil {
+		return errors.NewInternalServerError("Cannot update!")
+	}
+
 	return nil
 }

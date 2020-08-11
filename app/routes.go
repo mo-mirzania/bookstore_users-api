@@ -12,4 +12,5 @@ func Routes() {
 	r.GET("/users/:user_id", users.GetUser)
 	r.PUT("/users/:user_id", users.UpdateUser)
 	r.PATCH("/users/:user_id", users.UpdateUser)
+	r.DELETE("/users/:user_id", users.DeleteUser)
 }
