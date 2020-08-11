@@ -7,8 +7,9 @@ import (
 
 // Routes func
 func Routes() {
-	r.GET("/ping", ping.Ping) // We are not calling the Ping() function. We just specify which function is in charge of.
-	r.GET("/users/:user_id", users.GetUser)
+	r.GET("/ping", ping.Ping)          // We are not calling the Ping() function. We just specify which function is in charge of.
 	r.POST("/users", users.CreateUser) // We must not use /users/ !!!
-	//r.GET("/users/search", controllers.SearchUser)
+	r.GET("/users/:user_id", users.GetUser)
+	r.PUT("/users/:user_id", users.UpdateUser)
+	r.PATCH("/users/:user_id", users.UpdateUser)
 }

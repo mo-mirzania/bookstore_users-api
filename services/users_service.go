@@ -30,3 +30,32 @@ func CreateUser(user users.User) (*users.User, *errors.RestErr) {
 
 	return &user, nil
 }
+
+// UpdateUser func
+func UpdateUser(isPartial bool, user users.User) (*users.User, *errors.RestErr) {
+	current, err := GetUser(user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if isPartial {
+		if user.FirstName != "" {
+			current.FirstName = user.FirstName
+		}
+		if user.LastName != "" {
+			current.LastName = user.LastName
+		}
+		if user.Email != "" {
+			current.Email = user.Email
+		}
+	} else {
+		current.FirstName = user.FirstName
+		current.LastName = user.LastName
+		current.Email = user.Email
+	}
+	err = current.Update()
+	if err != nil {
+		return nil, err
+	}
+	return current, nil
+}
